@@ -1,37 +1,72 @@
+# Author: Gustavo Solcia
+# E-mail: gustavo.solcia@usp.br
+
+"""Wrapper of N4 bias field correction with shrinking from SimpleITK.
+
+"""
+
 import os
 import SimpleITK as sitk
 
-def shrinkBiasCorrectin(inputArray):
+def shrinkBiasCorrection(inputImage):
 
-    shrinkedArray = sitk.Shrink(inputArray, [4]*inputArray.GetDimension())
+    """Bias field correction with shrinking operation.
 
+    Parameters:
+    -----------
+    inputImage: sitkImage
+        We expect an sitkImage from sitk.ReadImage.
+
+    Returns:
+    --------
+    dataWithoutBias: sitkImage
+        Reconstructed data (not shrinked) without bias.
+    bias: sitkImage
+        The removed bias field (we recommend saving this array for further analysis).
+
+    """
+
+    shrinkFactor = 4 # Must be a integer factor
+
+    # Using sitk.Shrink reduces the processing time and gives good results
+    shrinkedImage = sitk.Shrink(inputImage, [shrinkFactor]*inputImage.GetDimension())
+    
     biasFilter = sitk.N4BiasFieldCorrectionImageFilter()
+    shrinkedImageWithoutBias = biasFilter.Execute(sitk.Cast(shrinkedImage, sitk.sitkFloat32))
+    bias = biasFilter.GetLogBiasFieldAsImage(inputImage)
     
-    shrinkedArrayWithoutBias = BiasFilter.Execute(sitk.Cast(shrinkedArray, sitkFloat32))
-    bias = BiasFilter.GetLogBiasFieldAsImage(inputArray)
-    
-    dataWithoutBias = sitk.Cast(sitk.Cast(inputArray, sitk.sitkFloat32))/sitk.Exp(bias),
+    dataWithoutBias = sitk.Cast(sitk.Cast(inputImage, sitk.sitkFloat32)/sitk.Exp(bias),
                         sitk.sitkInt16)
 
     return dataWithoutBias, bias
 
 
 def writeImage(dataPath, data):
+    
+    """Wrapper of image writing operation from SimpleITK.
+
+    Parameters:
+    ----------
+    dataPath: string
+        String containing a path to the directory + the data name.
+    data: sitkImage
+        sitkImage that you want to save.
+
+    """
     standard_writer = sitk.ImageFileWriter()
     standard_writer.SetFileName(dataPath)
-    standar_writer.Execute(data)
+    standard_writer.Execute(data)
 
-if __name__='__main__':
+if __name__=='__main__':
 
-    path = os.path.abspath("path_to_MRIdata")
-    inputName = '/MRIdata.nii.gz'
-    outputName = 'LogBiasField_MRIdata.vtk'
-    biasName = 'biasRemoved_MRIdata.nii.gz'
+    path = os.path.abspath("/home/solcia/Documents/phd/MRI data/rocks/3C/PSIF300/")
+    inputName = '/rescaled_3C_cropped.nii.gz'
+    outputName = '/biasRemoved_MRIdata.nii.gz' #The forward slash is necessary to path+*Name work!
+    biasName = '/logBiasField_MRIdata.nii.gz'
     
     image = sitk.ReadImage(path+inputName)
-    imageArray = sitk.GetArrayViewFromImage(image)
     
-    dataWithoutBias, bias = shrinkBiasCorrection(imageArray)
+    dataWithoutBias, bias = shrinkBiasCorrection(image)
 
     writeImage(path+outputName, dataWithoutBias)
     writeImage(path+biasName, bias)
