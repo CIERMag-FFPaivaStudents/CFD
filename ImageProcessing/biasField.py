@@ -12,12 +12,12 @@ def shrinkBiasCorrection(inputImage):
 
     """Bias field correction with shrinking operation.
 
-    Parameters:
+    Parameters
     -----------
     inputImage: sitkImage
         We expect an sitkImage from sitk.ReadImage.
 
-    Returns:
+    Returns
     --------
     dataWithoutBias: sitkImage
         Reconstructed data (not shrinked) without bias.
@@ -45,7 +45,7 @@ def writeImage(dataPath, data):
     
     """Wrapper of image writing operation from SimpleITK.
 
-    Parameters:
+    Parameters
     ----------
     dataPath: string
         String containing a path to the directory + the data name.
