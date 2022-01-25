@@ -14,7 +14,6 @@ This repository will show some Computational Fluid Dynamics (CFD) cases. Our obj
         </sub>
       </a>
     </td>
-  </tr>
   <td align="center">
       <a href="#">
         <img src="https://github.com/felipederrico.png?size=100" width="100px;" alt="Foto do Felipe Derrico no GitHub"/><br>
@@ -23,4 +22,5 @@ This repository will show some Computational Fluid Dynamics (CFD) cases. Our obj
         </sub>
       </a>
     </td>
+  </tr>
 </table>
