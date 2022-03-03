@@ -10,4 +10,4 @@ The codes are still being revised and commited to the directory. However, you ca
 - [x] Bias Field correction
 - [ ] Denoising
 - [x] Segmentation
-- [ ] 3D reconstruction
+- [x] 3D reconstruction
