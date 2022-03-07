@@ -1,7 +1,7 @@
 # Author: Gustavo Solcia
 # E-mail: gustavo.solcia@usp.br
 
-"""
+"""Denoising using a modified Non-Local Means for Rician noise.
 
 """
 
@@ -17,13 +17,17 @@ from modifiedNLM.filter.modified_nl_means import rician_denoise_nl_means
 
 def NLM(imageData):
 
-    """
+    """Wrapper of modified NLM imported from https://github.com/CIERMag-FFPaivaStudents/NLM.
 
     Parameters
-    -----------
+    ----------
+    imageData: array
+        Numpy array from image desired to denoise. Atention: Be shure your image has Rician noise.
 
     Returns
-    --------
+    -------
+    denoisedData: array
+        Denoised array from rician_denoise_nl_means.
 
     """
 
@@ -36,6 +40,23 @@ def NLM(imageData):
                            **patch_kw)
     return denoisedData
 
+def createSITKcopy(image, array):
+
+    """Create new sitk image from array with same information from base image.
+
+    Parameters
+    ----------
+
+    Returns
+    -------
+
+    """
+    
+    copy = sitk.GetImageFromArray(array)
+    copy.CopyInformation(image)
+
+    return copy
+
 
 if __name__ == '__main__':
 
@@ -46,8 +67,7 @@ if __name__ == '__main__':
 
     denoisedData = NLM(imageData)
 
-    denoised = sitk.GetImageFromArray(denoisedData)
-    denoised.CopyInformation(image)
+    denoised = createSITKcopy(image, denoisedData)
 
     standard_writer = sitk.ImageFileWriter()
     standard_writer.SetFileName(path+'denoised_3C.nii.gz')
