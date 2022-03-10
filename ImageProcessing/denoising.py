@@ -46,9 +46,15 @@ def createSITKcopy(image, array):
 
     Parameters
     ----------
+    image: sitkImage
+        Base image with the information that you want to copy.
+    array: array
+        Numpy array that you want to transform in sitkImage.
 
     Returns
     -------
+    copy: sitkImage
+        Transformed array with the same information from the base image.
 
     """
     
@@ -57,18 +63,33 @@ def createSITKcopy(image, array):
 
     return copy
 
+def writeImage(dataPath, data):
+
+    """Wrapper of image writing operation from SimpleITK.
+
+    Parameters
+    ----------
+    dataPath: string
+        String containing a path to the directory + the data name.
+    data: sitkImage
+        sitkImage that you want to save.
+
+    """
+    standard_writer = sitk.ImageFileWriter()
+    standard_writer.SetFileName(dataPath)
+    standard_writer.Execute(data)
 
 if __name__ == '__main__':
 
     path = os.path.abspath('/home/solcia/Documents/phd/MRI data/rocks/3C/PSIF300/')
-    name = '/standard_s4_3C.nii.gz'
-    image = sitk.ReadImage(path+name)
+    inputName = '/standard_s4_3C.nii.gz'
+    outputName = '/denoised_3C.nii.gz'
+    image = sitk.ReadImage(path+inputName)
+
     imageData = sitk.GetArrayViewFromImage(image)
 
     denoisedData = NLM(imageData)
 
     denoised = createSITKcopy(image, denoisedData)
 
-    standard_writer = sitk.ImageFileWriter()
-    standard_writer.SetFileName(path+'denoised_3C.nii.gz')
-    standard_writer.Execute(denoised)
+    writeImage(path+outputName, denoised)
