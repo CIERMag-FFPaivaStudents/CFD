@@ -1,0 +1,14 @@
+foamCleanTutorials #Making sure the directory is clean
+
+cartesianMesh 
+
+renumberMesh -overwrite
+
+checkMesh
+
+decomposePar
+
+simpleFoam > log.simple & 
+pyFoamPlotWatcher.py log.simple --with-all
+
+reconstructPar -latestTime
