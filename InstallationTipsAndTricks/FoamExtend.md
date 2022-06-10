@@ -50,6 +50,7 @@ sed -i -e 's/g++/\$(WM_CXX)/' wmake/rules/linux64Gcc/c++
 ```
 
 ## (Optional) Get fsiFOAM and install 
+If you have the intent of using fsiFOAM with primitive functions such as csvFile, you should consider installing FOAM-Extend 4.1 (such functionalities were implemented by Henrik Rusche in this newer version).
 
 ```
 wget https://openfoamwiki.net/images/d/d6/Fsi_40.tar.gz
@@ -90,7 +91,7 @@ First you need to UNCOMMENT lines (382-394) from foam-extend-4.0/src/finiteVolum
          }
 ```
 
-Now you need to COMMENT lines (1044-1051) from foam-extend-4.0/src/finiteVolume/fvMatrices/fvMatrix/fvMatrix.C
+Now you need to COMMENT lines (1044-1051 in fe40 or 1133-1140 in fe41) from foam-extend-4.0/src/finiteVolume/fvMatrices/fvMatrix/fvMatrix.C
 
 ```
     //if (!psi_.mesh().schemesDict().fluxRequired(psi_.name()))
