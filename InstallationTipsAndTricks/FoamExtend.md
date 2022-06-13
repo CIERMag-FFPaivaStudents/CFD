@@ -1,5 +1,7 @@
 # FOAM-Extend 4.0 for Ubuntu 20.04
 
+Before the installation you should check your Bison version (2.x in FOAM-Extend 4.0 or 3.x in FOAM-Extend 4.1)
+
 ## Make directory and clone repository
 
 It is important to set the installation directory in your $HOME to assure permissions.
