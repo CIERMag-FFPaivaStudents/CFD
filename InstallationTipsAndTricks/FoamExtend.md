@@ -37,7 +37,16 @@ source etc/bashrc
 echo "alias fe40='source \$HOME/foam/foam-extend-4.0/etc/bashrc'" >> $HOME/.bashrc
 ```
 
-## DON'T FORGET THIS STEP BEFORE THE INSTALL COMMAND
+## If you also want to compile Paraview
+
+Usually the '/path/to/qmake_directory' is '/usr/bin/qmake-qt4' but is good to check the path with 'which qmake-qt4'
+
+```
+export QT_BIN_DIR=/path/to/qmake_directory
+echo "export QT_BIN_DIR=$QT_BIN_DIR" >> etc/prefs.sh
+```
+
+## DON'T FORGET THIS STEP BEFORE THE INSTALL COMMAND (only in ubuntu 20.04)
 
 ```
 sed -i -e 's=rpmbuild --define=rpmbuild --define "_build_id_links none" --define=' ThirdParty/tools/makeThirdPartyFunctionsForRPM
