@@ -18,6 +18,8 @@ mkdir Make
 ```
 
 Now we need a files (just substitute <yourBoundaryCondition> for your specific case):
+  
+Make sure that the third line of the code below is typed correctly according to you new boundary condition. Also, new boundary conditions should be placed bellow that line to also be compiled.
 
 ```
 fvPatchFields = fields/fvPatchFields
