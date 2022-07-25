@@ -122,6 +122,11 @@ cd $HOME/foam/foam-extend-4.0/src/finiteVolume
 wmake libso
 ```
 
+## Problems with Paraview
 
+Create a temporary 'case.foam' if you have an environment value error with paraFoam and then open it in paraview as you normaly do with any file (make sure  you are in another terminal).
 
+```
+touch case.foam
+```
 
