@@ -26,3 +26,16 @@ cd solids4foam-release
 ./Allwmake
 ```
 
+## Replacing files in OpenFOAM-v1912
+
+If you try to compile solids4Foam with v1912 you are going to be asked to replace some files. Do what they say in the error log:
+
+```
+cp filesToReplaceInOF/AMIInterpolation.C /home/<user>/OpenFOAM/OpenFOAM-v1912/src/meshTools/AMIInterpolation/AMIInterpolation/
+
+cp filesToReplaceInOF/AMIInterpolation.H /home/<user>/OpenFOAM/OpenFOAM-v1912/src/meshTools/AMIInterpolation/AMIInterpolation/
+
+wmake libso /home/<user>/OpenFOAM/OpenFOAM-v1912/src/meshTools
+```
+
+obs: Compiling OpenFOAM-v1912 in your home can make your life easier since you need to substitute and compile code later.
