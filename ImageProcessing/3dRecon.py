@@ -3,16 +3,16 @@
 
 """3D reconstruction using a segmentation image. We apply Marching Cubes algorithm and a 
    surface smoothing from the largest connected region. LOOK AT YOUR DATA: for some cases 
-   the surface smoothing can shrink parts of your surface.
+   the surface smoothing can shrink parts of your object.
 """
 
 import os
 import vtk
 import SimpleITK as sitk
 
-def applyMarchingCubes(image, threshold):
+def applyMarchingCubes(image, threshold, transformCoord, QFormMatrix):
 
-    """Wrapper function to apply vtk marching cubes algorithm.
+    """Wrapper function to apply vtk marching cubes algorithm. If transformCoord ==True applies vtk transform filter for alignment between vtkImageData and vtkPolyData. More info: https://nifti.nimh.nih.gov/nifti-1/documentation/nifti1fields/nifti1fields_pages/qsform.html
 
     Parameters
     ----------
@@ -35,8 +35,23 @@ def applyMarchingCubes(image, threshold):
     marchingCubes.ComputeGradientsOn()
     marchingCubes.SetValue(contourNumber, threshold)
     marchingCubes.Update()
+    
+    if transformCoord==True:
+        for i in range(2):
+            for j in [0,1,2,3]:
+                QFormMatrix.SetElement(i,j,-QFormMatrix.GetElement(i,j))
+        transform = vtk.vtkTransform()
+        transform.SetMatrix(QFormMatrix)
+        transform.Update()
 
-    mcPoly = marchingCubes.GetOutput()
+        transformPoly = vtk.vtkTransformPolyDataFilter()
+        transformPoly.SetInputConnection(marchingCubes.GetOutputPort())
+        transformPoly.SetTransform(transform)
+        transformPoly.Update()
+
+        mcPoly = transformPoly.GetOutput()
+    else:
+        mcPoly = marchingCubes.GetOutput()
 
     largestRegion = getLargestRegion(mcPoly)
 
@@ -117,8 +132,9 @@ def readImage(path, name):
     Returns
     -------
     image: vtkNIFTIImage
-        Desired image from path+name
-
+        Desired image from path+name.
+    QFormMatrix: vtkMatrix
+        QFormMatrix for vtk transform filter.
     """
     reader = vtk.vtkNIFTIImageReader()
     reader.SetFileName(path+name)
@@ -126,7 +142,9 @@ def readImage(path, name):
 
     image = reader.GetOutput()
 
-    return image
+    QFormMatrix = reader.GetQFormMatrix()
+
+    return image, QFormMatrix
 
 def writeSTL(path, name, poly):
 
@@ -158,10 +176,11 @@ if __name__=='__main__':
     smoothOutputName = '/smooth_'+sample+'.stl'
 
     threshold = 2.5
+    transformCoord=True
 
-    vtkImage = readImage(inputPath, inputName)
+    vtkImage, QFormMatrix = readImage(inputPath, inputName)
 
-    mcPoly = applyMarchingCubes(vtkImage, threshold)
+    mcPoly = applyMarchingCubes(vtkImage, threshold, transformCoord, QFormMatrix)
 
     polyFiltered = applyPolyFilter(mcPoly)
 
