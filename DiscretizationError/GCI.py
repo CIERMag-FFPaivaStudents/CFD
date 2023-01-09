@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 def computeRepresentativeCell(N, Volume):
-    """
+    """Representative cell definition.
 
     """
 
@@ -20,7 +20,7 @@ def computeRepresentativeCell(N, Volume):
     return h
 
 def computeRefinementFactor(N1, N2):
-    """
+    """Refinement factor definition.
 
     """
 
@@ -28,7 +28,7 @@ def computeRefinementFactor(N1, N2):
 
     return r
 
-def calculateApparentOrder(r_21, r_32, phi_1, phi_2, phi_3):
+def computeApparentOrder(r_21, r_32, phi_1, phi_2, phi_3):
     """
 
     """
@@ -92,7 +92,7 @@ if __name__=='__main__':
     print(r_21)
     print(r_32)
 
-    p = calculateApparentOrder(r_21, r_32, 
+    p = computeApparentOrder(r_21, r_32, 
             phi_1, phi_2, phi_3)
 
     plt.figure()
@@ -101,10 +101,8 @@ if __name__=='__main__':
     plt.plot(phi_3*997*1e-5, experimental_data['flow_rate'], label='extrafine')
     plt.errorbar(experimental_data['pressure'], experimental_data['flow_rate'],
             xerr = 1e-3*np.ones(len(experimental_data['pressure'])),
-            #yerr = experimental_data['flow_rate']*0.01,
             color='gray',marker='o', capsize=5, label='experimental')
     plt.legend()
-    #plt.show()
 
     phi_21_extrapolated = (r_21**p*phi_1-phi_2)/(r_21**p-1)
     phi_32_extrapolated = (r_32**p*phi_2-phi_3)/(r_32**p-1)
@@ -112,18 +110,14 @@ if __name__=='__main__':
     error_21 = np.abs((phi_1-phi_2)/phi_1)
     
     GCI_fine = 1.25*error_21/(r_21**np.mean(p)-1)
-    #GCI_fine = 1.25*error_21/(r_21**p-1)
     
     plt.figure()
     plt.errorbar(fine_data['pressure']*997*1e-5, experimental_data['flow_rate'],
             xerr = GCI_fine*997*1e-5,marker='o', capsize=5, color = 'k', label='fine')
     plt.errorbar(experimental_data['pressure'], experimental_data['flow_rate'],
             xerr = 1e-3*np.ones(len(experimental_data['pressure'])),
-            #yerr = experimental_data['flow_rate']*0.01, 
             color='gray',marker='o', capsize=5, label='experimental')
-    #plt.xlim([0, 0.15])
     plt.legend()
-    #plt.show()
 
     plt.figure(figsize=(6,6))
     sns.set()
